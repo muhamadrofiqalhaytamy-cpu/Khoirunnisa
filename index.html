@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesan Buat Kamu</title>
+
+<style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  overflow:hidden;
+  color:white;
+}
+
+/* background */
+.bg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:blur(3px) brightness(0.6);
+}
+
+/* cover love */
+#cover{
+  position:fixed;
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:5;
+}
+
+.love{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:white;
+  color:red;
+  font-size:35px;
+  border:none;
+  animation:pulse 1.4s infinite;
+  cursor:pointer;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.2)}
+  100%{transform:scale(1)}
+}
+
+/* card pertanyaan */
+#app{
+  display:none;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  width:320px;
+}
+
+.card{
+  background:rgba(255,255,255,0.92);
+  color:black;
+  padding:25px;
+  border-radius:22px;
+  backdrop-filter:blur(8px);
+}
+
+/* panda animasi */
+.panda{
+  width:95px;
+  border-radius:50%;
+  margin-bottom:10px;
+  animation:float 2.5s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+  100%{transform:translateY(0)}
+}
+
+textarea{
+  width:100%;
+  height:80px;
+  margin:12px 0;
+  border-radius:12px;
+  padding:10px;
+  resize:none;
+  border:1px solid #ddd;
+}
+
+button.next{
+  background:#ff4d6d;
+  color:white;
+  border:none;
+  padding:10px 18px;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+button.send{
+  background:#25D366;
+  color:white;
+  border:none;
+  padding:12px 20px;
+  border-radius:25px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<img src="assets/bg.jpg" class="bg">
+
+<!-- COVER -->
+<div id="cover">
+  <button class="love" onclick="start()">❤</button>
+  <p>Sentuh LOVEnya!</p>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="card" id="card">
+    <img src="assets/panda1.gif" class="panda" id="panda">
+    <h2 id="tanya">Namamu siapa?</h2>
+    <textarea id="jawab" placeholder="Tulis di sini..."></textarea>
+    <br>
+    <button class="next" onclick="next()">Lanjut 👉</button>
+  </div>
+</div>
+
+<audio id="music" loop>
+<source src="assets/music.mp3">
+</audio>
+
+<script>
+let pertanyaan=[
+"Namamu siapa?",
+"Lagi dimana?",
+"Lagi apa?",
+"Kangen gak sama aku? 😆"
+];
+
+let pandaAnim=[
+"assets/panda1.gif",
+"assets/panda2.gif",
+"assets/panda3.gif",
+"assets/panda4.gif"
+];
+
+let step=0;
+let jawaban=[];
+
+function start(){
+document.getElementById("cover").style.display="none";
+document.getElementById("app").style.display="block";
+document.getElementById("music").play().catch(()=>{});
+}
+
+function next(){
+let isi=document.getElementById("jawab").value.trim();
+if(!isi)return;
+
+jawaban.push(isi);
+document.getElementById("jawab").value="";
+step++;
+
+if(step<pertanyaan.length){
+document.getElementById("tanya").innerText=pertanyaan[step];
+document.getElementById("panda").src=pandaAnim[step];
+}
+else{
+selesai();
+}
+}
+
+function selesai(){
+document.getElementById("card").innerHTML=`
+<img src="assets/panda5.gif" class="panda">
+<h2>Yeaayy! 🎉</h2>
+<p>Makasih udah jawab semuanya 😆</p>
+<p>Kirim hasil jawabannya ke WhatsApp ya</p>
+<button class="send" onclick="kirim()">💌 Kirim</button>
+`;
+}
+
+function kirim(){
+let text="Halo ini jawabanku:%0A%0A";
+for(let i=0;i<pertanyaan.length;i++){
+text+=pertanyaan[i]+"%0A"+jawaban[i]+"%0A%0A";
+}
+window.location.href="https://wa.me/628XXXXXXXXXX?text="+text;
+}
+</script>
+
+</body>
+</html>
